@@ -1,6 +1,6 @@
 import { assertEquals, assertRejects } from "../deps.ts";
 
-import { WebStorage } from "./webstorage.ts";
+import { WebStorer } from "./storer.ts";
 import { FakeStorage } from "./fake_storage.ts";
 
 interface TestItem {
@@ -8,9 +8,9 @@ interface TestItem {
   greeting: string;
 }
 
-Deno.test("WebStorage stores and removes an item", async () => {
+Deno.test("WebStorer stores and removes an item", async () => {
   const key = (data: TestItem) => data.id;
-  const storage = new WebStorage<string, TestItem>(key, new FakeStorage());
+  const storage = new WebStorer<string, TestItem>(key, new FakeStorage());
 
   const item: TestItem = { id: "test", greeting: "Hello" };
   await storage.set(item);
@@ -22,8 +22,8 @@ Deno.test("WebStorage stores and removes an item", async () => {
   );
 });
 
-Deno.test("WebStorage lists and clears some items", async () => {
-  const storage = new WebStorage<string, TestItem>(
+Deno.test("WebStorer lists and clears some items", async () => {
+  const storage = new WebStorer<string, TestItem>(
     (data) => data.id,
     new FakeStorage(),
   );

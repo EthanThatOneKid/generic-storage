@@ -1,4 +1,4 @@
-import type { StorageInterface } from "../storage_interface.ts";
+import type { Storer } from "../storer.ts";
 
 /**
  * A storage interface for the browser's local storage.
@@ -6,9 +6,8 @@ import type { StorageInterface } from "../storage_interface.ts";
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
  */
-export class WebStorage<Key extends string, Data>
-  implements StorageInterface<Key, Data> {
-  private readonly internalKey = "WebStorageInternalKey" as const;
+export class WebStorer<Key extends string, Data> implements Storer<Key, Data> {
+  private readonly internalKey = "__WebStorage.internalKey" as const;
 
   constructor(
     public readonly key: (data: Data) => Key,
