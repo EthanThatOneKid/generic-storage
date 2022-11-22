@@ -14,6 +14,18 @@ Generic storage is for use in experimental projects that are **in development**.
 deno test
 ```
 
+### Formatting
+
+```bash
+deno fmt
+```
+
+### Linting
+
+```bash
+deno lint
+```
+
 ### Running the server locally
 
 ```bash
