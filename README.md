@@ -4,14 +4,18 @@ Generic storage interface for declarative resources.
 
 ## Purpose
 
-Generic storage is for use in experimental projects that are **in development**. This repository provides a minimal way (requiring few steps) of persisting arbitrary data online.
+Generic storage is for use in experimental projects that are **in development**.
+
+This repository provides a minimal way (requiring few steps) of persisting
+arbitrary data online.
 
 ## Development
 
 ### Testing
 
 ```bash
-deno test
+deno test --allow-all --coverage=cov/
+deno coverage --lcov cov/
 ```
 
 ### Formatting
@@ -35,7 +39,8 @@ deno lint
 
 ### Running the server on Deno Deploy
 
-_TODO(@EthanThatOneKid): Document the process of spinning up a simple, generic storage system on [Deno Deploy](https://deno.com/deploy/docs/deployments)._
+_TODO(@EthanThatOneKid): Document the process of spinning up a simple, generic
+storage system on [Deno Deploy](https://deno.com/deploy/docs/deployments)._
 
 ---
 
