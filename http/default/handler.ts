@@ -1,17 +1,10 @@
-import type { HTTPServer } from "../../mod.ts";
+import type { DefaultData, DefaultServer } from "./server.ts";
 import type { Handler } from "../mod.ts";
 
-export interface UnknownData {
-  /** Primary key property name. */
-  $key: "id";
-
-  /** User-defined JSON properties. */
-  id: string;
-  [key: string]: unknown;
-}
-
-export class UnknownHandler<Data extends UnknownData> implements Handler {
-  constructor(private readonly server: HTTPServer<Data>) {}
+export class DefaultHandler<
+  Data extends DefaultData,
+> implements Handler {
+  constructor(private readonly server: DefaultServer<Data>) {}
 
   public async handle(r: Request): Promise<Response> {
     switch (r.method) {

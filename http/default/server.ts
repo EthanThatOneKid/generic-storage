@@ -1,16 +1,16 @@
-import type { Storer } from "../../storer/storer.ts";
+import type { Storer } from "../../storer.ts";
 import type { Server } from "../server.ts";
 
 /**
- * HTTPServerData is the data that is stored in the HTTPServer.
+ * DefaultData is the data that is stored by the DefaultServer.
  *
- * The Key passed to the HTTPServer is the property name of the primary.
+ * The Key passed to the DefaultServer is the property name of the primary.
  * in a stored data record.
  */
-type HTTPServerData<Key extends string = "id"> =
+export type DefaultData<Key extends string = "id"> =
   & {
     /**
-     * Dev-defined property name of key.
+     * Dev-defined primary key name.
      */
     $key: Key;
 
@@ -21,12 +21,12 @@ type HTTPServerData<Key extends string = "id"> =
   }
   & {
     /**
-     * The key of the dev-defined property name.
+     * Dev-defined property key.
      */
     [key in Key]: string;
   };
 
-export class HTTPServer<Data extends HTTPServerData> implements Server<Data> {
+export class DefaultServer<Data extends DefaultData> implements Server<Data> {
   constructor(private readonly storage: Storer<string, Data>) {
   }
 
