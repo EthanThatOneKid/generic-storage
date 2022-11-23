@@ -45,10 +45,9 @@ export class HTTPServer<Data extends HTTPServerData> implements Server<Data> {
   }
 
   public async list(data: Partial<Data>): Promise<Data[]> {
+    const props = Object.keys(data);
     const keys = await this.storage.list(/* filter=*/ (d) =>
-      Object.keys(data).every((k) =>
-        JSON.stringify(d[k]) === JSON.stringify(data[k])
-      )
+      props.every((k) => JSON.stringify(d[k]) === JSON.stringify(data[k]))
     );
 
     return await Promise.all(keys.map((k) => this.storage.get(k)));
