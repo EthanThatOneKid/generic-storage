@@ -1,9 +1,14 @@
-# Copied over from:
 # https://deno.land/manual@v1.26.1/continuous_integration
 
 name: Test
 
-on: push
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [mai]
 
 jobs:
   build:
@@ -29,3 +34,9 @@ jobs:
       # This generates a report from the collected coverage in `deno test --coverage`. It is
       # stored as a .lcov file which integrates well with services such as Codecov, Coveralls and Travis CI.
       - run: deno coverage --lcov cov/ > cov.lcov
+
+      # https://v1rtl.site/blog/coverage-in-deno/
+      - name: Collect coverage
+        uses: codecov/codecov-action@v1.0.10 # upload the report on Codecov
+        with:
+          file: ./cov.lcov
