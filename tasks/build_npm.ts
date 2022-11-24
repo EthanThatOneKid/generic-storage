@@ -1,0 +1,42 @@
+/* Run:
+ *
+ * ```
+ * # run script example
+ * deno run -A tasks/build_npm.ts 0.1.0
+ *
+ * # go to output directory and publish
+ * cd npm
+ * npm publish
+ * ```
+ */
+
+import { build, emptyDir } from "https://deno.land/x/dnt@0.32.0/mod.ts";
+
+await emptyDir("./npm");
+
+await build({
+  entryPoints: ["./demos/default/client/mod.ts"],
+  outDir: "./npm",
+  shims: {
+    // see JS docs for overview and more options
+    deno: true,
+  },
+  package: {
+    // package.json properties
+    name: "generic-storage",
+    version: Deno.args[0],
+    description: "Client for generic key-value storage HTTP server.",
+    license: "MIT",
+    repository: {
+      type: "git",
+      url: "git+https://github.com/ethanthatonekid/generic-storage.git",
+    },
+    bugs: {
+      url: "https://github.com/ethanthatonekid/generic-storage/issues",
+    },
+  },
+});
+
+// post build steps
+Deno.copyFileSync("LICENSE", "npm/LICENSE");
+Deno.copyFileSync("README.md", "npm/README.md");

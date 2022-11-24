@@ -1,5 +1,6 @@
-import type { Client, Fetcher } from "../../../http/server.ts";
-import type { DefaultData } from "../../../http/default/server.ts";
+import type { Client } from "../../../http/common/client.ts";
+import type { Fetcher } from "../../../http/common/fetcher.ts";
+import type { DefaultData } from "../../../http/common/default_data.ts";
 
 export class DefaultClient implements Client<DefaultData> {
   constructor(
