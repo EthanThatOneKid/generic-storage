@@ -39,9 +39,6 @@ await build({
       url: "https://github.com/ethanthatonekid/generic-storage/issues",
     },
   },
-  // compilerOptions: {
-  //   lib: ["dom", "esnext"],
-  // },
 });
 
 // post build steps
