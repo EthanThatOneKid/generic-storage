@@ -1,23 +1,36 @@
-/* Run:
+/* Build NPM package:
+ * deno run -A tasks/build_npm.ts 0.0.1 -r
  *
- * ```
- * # run script example
+ * Build NPM package with custom remote:
+ * deno run -A tasks/build_npm.ts 0.0.1 -r https://github.com/ethanthatonekid/generic-storage/raw/$COMMIT_SHA
+ *
+ * Build NPM package locally:
  * deno run -A tasks/build_npm.ts 0.0.1
  *
- * # go to output directory and publish
- * cd npm
- * npm publish
- * ```
+ * Publish NPM package:
+ * npm adduser
+ * cd npm && npm publish
  */
 
+import { parse } from "https://deno.land/std@0.165.0/flags/mod.ts";
+import { join } from "https://deno.land/std@0.165.0/path/posix.ts";
+
+import type {
+  BuildOptions,
+  EntryPoint,
+} from "https://deno.land/x/dnt@0.32.0/mod.ts";
 import { build, emptyDir } from "https://deno.land/x/dnt@0.32.0/mod.ts";
 
-await emptyDir("./npm");
+const defaultEntrypoint = "./demos/default/client/mod.ts";
+const defaultRootTestDir = "./demos/default/client";
+const defaultOutDir = "./npm";
+const defaultRemotePrefix =
+  "https://github.com/ethanthatonekid/generic-storage/raw/main";
 
-await build({
-  entryPoints: ["./demos/default/client/mod.ts"],
-  rootTestDir: "./demos/default/client",
-  outDir: "./npm",
+const defaultOptions: BuildOptions = {
+  entryPoints: [defaultEntrypoint],
+  rootTestDir: defaultRootTestDir,
+  outDir: defaultOutDir,
   shims: {
     // see JS docs for overview and more options
     deno: true,
@@ -39,8 +52,39 @@ await build({
       url: "https://github.com/ethanthatonekid/generic-storage/issues",
     },
   },
-});
+};
 
-// post build steps
-Deno.copyFileSync("LICENSE", "npm/LICENSE");
-Deno.copyFileSync("README.md", "npm/README.md");
+await main();
+
+async function main() {
+  await emptyDir(defaultOutDir);
+
+  const flags = parse(Deno.args);
+  const remote = flags.r || flags.remote;
+
+  const options: BuildOptions = { ...defaultOptions };
+  if (remote) {
+    options.entryPoints = defaultOptions.entryPoints.map((entryPoint) =>
+      consolidate(entryPoint, remote)
+    );
+    options.rootTestDir = consolidate(defaultOptions.rootTestDir, remote);
+  }
+
+  await build(options);
+
+  // post build steps
+  Deno.copyFileSync("LICENSE", "npm/LICENSE");
+  Deno.copyFileSync("README.md", "npm/README.md");
+}
+
+function consolidate(
+  path: string | EntryPoint | undefined,
+  remoteArg: unknown,
+): string {
+  return join(
+    typeof remoteArg === "string" && remoteArg.startsWith("https://")
+      ? remoteArg
+      : defaultRemotePrefix,
+    (path as { path: string })?.path ?? path,
+  );
+}
