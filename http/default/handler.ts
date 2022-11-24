@@ -1,5 +1,7 @@
-import type { DefaultData, DefaultServer } from "./server.ts";
+import type { DefaultData } from "../common/default_data.ts";
 import type { Handler } from "../mod.ts";
+
+import type { DefaultServer } from "./server.ts";
 
 export class DefaultHandler<
   Data extends DefaultData,
@@ -24,7 +26,7 @@ export class DefaultHandler<
 
     switch (u.pathname) {
       case "/": {
-        const data = await r.json();
+        const data = r.body && await r.json();
         const list = await this.server.list(data);
         return new Response(JSON.stringify(list));
       }

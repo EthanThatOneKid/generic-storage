@@ -1,30 +1,6 @@
 import type { Storer } from "../../storer.ts";
-import type { Server } from "../server.ts";
-
-/**
- * DefaultData is the data that is stored by the DefaultServer.
- *
- * The Key passed to the DefaultServer is the property name of the primary.
- * in a stored data record.
- */
-export type DefaultData<Key extends string = "id"> =
-  & {
-    /**
-     * Dev-defined primary key name.
-     */
-    $key: Key;
-
-    /**
-     * User-defined JSON properties.
-     */
-    [k: string]: unknown;
-  }
-  & {
-    /**
-     * Dev-defined property key.
-     */
-    [key in Key]: string;
-  };
+import type { DefaultData } from "../common/default_data.ts";
+import type { Server } from "../common/server.ts";
 
 export class DefaultServer<Data extends DefaultData> implements Server<Data> {
   constructor(private readonly storage: Storer<string, Data>) {
