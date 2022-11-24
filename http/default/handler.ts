@@ -1,5 +1,7 @@
-import type { DefaultData, DefaultServer } from "./server.ts";
+import type { DefaultData } from "../common/default_data.ts";
 import type { Handler } from "../mod.ts";
+
+import type { DefaultServer } from "./server.ts";
 
 export class DefaultHandler<
   Data extends DefaultData,

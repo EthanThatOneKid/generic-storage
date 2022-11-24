@@ -1,5 +1,5 @@
-import { DefaultData } from "../../../http/default/server.ts";
-import type { Fetcher } from "../../../http/mod.ts";
+import type { DefaultData } from "../../../http/common/default_data.ts";
+import type { Fetcher } from "../../../http/common/fetcher.ts";
 
 interface FakeData extends DefaultData {
   $key: "id";
