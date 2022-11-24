@@ -1,4 +1,4 @@
-import { assertEquals } from "../../../deps.ts";
+import { assertEquals } from "../../../test.deps.ts";
 
 import { DefaultClient } from "./client.ts";
 import { FakeFetch } from "./fake_fetch.ts";

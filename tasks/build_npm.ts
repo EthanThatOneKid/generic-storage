@@ -16,15 +16,19 @@ await emptyDir("./npm");
 
 await build({
   entryPoints: ["./demos/default/client/mod.ts"],
+  rootTestDir: "./demos/default/client",
   outDir: "./npm",
   shims: {
     // see JS docs for overview and more options
     deno: true,
+    // shim fetch, File, FormData, Headers, Request, and Response by using the "undici" package
+    undici: true,
   },
+  // package.json properties
   package: {
-    // package.json properties
     name: "generic-storage",
-    version: Deno.args[0],
+    // remove the leading `v` in the tag name if it exists
+    version: Deno.args[0]?.replace(/^v/, ""),
     description: "Client for generic key-value storage HTTP server.",
     license: "MIT",
     repository: {
@@ -35,6 +39,9 @@ await build({
       url: "https://github.com/ethanthatonekid/generic-storage/issues",
     },
   },
+  // compilerOptions: {
+  //   lib: ["dom", "esnext"],
+  // },
 });
 
 // post build steps
