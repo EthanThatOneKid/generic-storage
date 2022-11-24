@@ -44,11 +44,17 @@ export class DefaultServer<Data extends DefaultData> implements Server<Data> {
     await this.storage.remove(key);
   }
 
-  public async list(data: Partial<Data>): Promise<Data[]> {
-    const props = Object.keys(data);
-    const keys = await this.storage.list(/* filter=*/ (d) =>
-      props.every((k) => JSON.stringify(d[k]) === JSON.stringify(data[k]))
-    );
+  public async list(data?: Partial<Data>): Promise<Data[]> {
+    let keys: string[];
+
+    if (!data) {
+      keys = await this.storage.list();
+    } else {
+      const props = Object.keys(data);
+      keys = await this.storage.list(/* filter=*/ (d) =>
+        props.every((k) => JSON.stringify(d[k]) === JSON.stringify(data[k]))
+      );
+    }
 
     return await Promise.all(keys.map((k) => this.storage.get(k)));
   }
