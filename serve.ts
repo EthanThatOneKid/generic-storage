@@ -1,11 +1,11 @@
-import type { ServeInit as StdServeInit } from "../deps.ts";
-import { serve as stdServe } from "../deps.ts";
+import type { ServeInit as StdServeInit } from "./deps.ts";
+import { serve as stdServe } from "./deps.ts";
 
-import type { Storer } from "../storer.ts";
-import { WebStorer } from "../web_storer/mod.ts";
+import type { Storer } from "./storer.ts";
+import { WebStorer } from "./web_storer/mod.ts";
 
-import type { DefaultData } from "./default/mod.ts";
-import { DefaultHandler, DefaultServer } from "./default/mod.ts";
+import type { DefaultData } from "./http/common/default_data.ts";
+import { DefaultHandler, DefaultServer } from "./http/default/mod.ts";
 
 export interface ServeInit<Data extends DefaultData> extends StdServeInit {
   storage?: Storer<string, Data>;
@@ -21,7 +21,7 @@ export interface ServeInit<Data extends DefaultData> extends StdServeInit {
  * The below example serves with the port 3000.
  *
  * ```ts
- * import { serve } from "https://$MODULE_LOCATION/http/serve.ts";
+ * import { serve } from "https://$MODULE_LOCATION/serve.ts";
  * serve({ port: 3000 });
  * ```
  *
@@ -30,7 +30,7 @@ export interface ServeInit<Data extends DefaultData> extends StdServeInit {
  * `onListen` option to override it.
  *
  * ```ts
- * import { serve } from "https://$MODULE_LOCATION/http/serve.ts";
+ * import { serve } from "https://$MODULE_LOCATION/serve.ts";
  * serve({
  *   onListen({ port, hostname }) {
  *     console.log(`Server started at http://${hostname}:${port}`);
@@ -42,7 +42,7 @@ export interface ServeInit<Data extends DefaultData> extends StdServeInit {
  * You can also specify `undefined` or `null` to stop the logging behavior.
  *
  * ```ts
- * import { serve } from "https://$MODULE_LOCATION/http/serve.ts";
+ * import { serve } from "https://$MODULE_LOCATION/serve.ts";
  * serve({ onListen: undefined });
  * ```
  */
