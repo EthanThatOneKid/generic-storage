@@ -1,6 +1,6 @@
 import { parse } from "../../deps.ts";
 
-import { serve } from "../../http/serve.ts";
+import { serve } from "../../serve.ts";
 
 main();
 

@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "../deps.ts";
+import { assertEquals, assertRejects } from "../test.deps.ts";
 
 import { WebStorer } from "./storer.ts";
 import { FakeStorage } from "./fake_storage.ts";
