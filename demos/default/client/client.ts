@@ -1,16 +1,17 @@
-import type { Client, Fetcher } from "../../../http/server.ts";
-import type { DefaultData } from "../../../http/default/server.ts";
+import type { Client } from "../../../http/common/client.ts";
+import type { Fetcher } from "../../../http/common/fetcher.ts";
+import type { DefaultData } from "../../../http/common/default_data.ts";
 
 export class DefaultClient implements Client<DefaultData> {
   constructor(
     public readonly origin: string,
-    private readonly fetcher: Fetcher = { fetch },
+    private readonly fetcher: Fetcher,
   ) {}
 
-  async get(key: string) {
+  async get(key: string): Promise<DefaultData> {
     const url = new URL(`${this.origin}/${key}`);
     const res = await this.fetcher.fetch(url);
-    return await res.json();
+    return await res.json() as DefaultData;
   }
 
   async set(data: DefaultData) {
@@ -32,7 +33,7 @@ export class DefaultClient implements Client<DefaultData> {
     }
   }
 
-  async list(data?: Partial<DefaultData>) {
+  async list(data?: Partial<DefaultData>): Promise<DefaultData[]> {
     const res = await this.fetcher.fetch(this.origin, {
       method: "GET",
       headers: {
@@ -40,7 +41,7 @@ export class DefaultClient implements Client<DefaultData> {
       },
       body: JSON.stringify(data),
     });
-    return await res.json();
+    return await res.json() as DefaultData[];
   }
 
   async clear() {
