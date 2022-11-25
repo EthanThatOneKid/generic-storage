@@ -65,6 +65,7 @@ export function serve<Data extends DefaultData>(
 
 function applyCORS(res: Response, allowedOrigins?: string): Response {
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, DELETE");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type");
 
   if (allowedOrigins) {
     res.headers.set("Access-Control-Allow-Origin", allowedOrigins);
