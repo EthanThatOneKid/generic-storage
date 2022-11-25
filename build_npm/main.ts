@@ -141,18 +141,41 @@ function replaceRelativeImportsWithRemoteURL(
       relativeImportPattern,
       (
         _,
-        keyword, /*= "import" */
-        deps, /*= "{ dep }" */
-        quote, /*= "'" */
+        /* "import" =*/ keyword: string,
+        /* "{ dep }" =*/ deps: string,
+        /* "'" =*/ quote: string,
         __,
-        relativePath, /*= "./mod.ts" */
-      ) =>
-        `${keyword} ${deps ? `${deps} from` : ""} ${quote}${
-          urlJoin(prefix, relativePath)
-        }${quote}`,
+        /* "./mod.ts" =*/ relativePath: string,
+      ) => {
+        const left = `${keyword} ${deps ? `${deps} from ` : ""}`;
+        const right = absolute(prefix, quote, relativePath);
+        return `${left}${right}`;
+      },
     ).replaceAll(
       inlineRelativeImportPattern,
-      (_, quote, /*= "'" */ __, relativePath /*= "./mod.ts" */) =>
-        `import(${quote}${urlJoin(prefix, relativePath)}${quote})`,
+      (
+        _,
+        /* "'" =*/ quote: string,
+        __,
+        /* "./mod.ts" =*/ relativePath: string,
+      ) => `import(${absolute(prefix, quote, relativePath)})`,
     );
+}
+
+/**
+ * absolute builds an absolute URL string given a relative path wrapped in quotes.
+ *
+ * This function additionally appends a unique cache-busting query parameter to the
+ * URL.
+ */
+function absolute(
+  prefix: string,
+  quote: string,
+  relativePath: string,
+) {
+  const u = new URL(urlJoin(prefix, relativePath));
+
+  // Set cache query to avoid unintentionally-cached imports.
+  u.searchParams.set("__CACHE", Math.random().toString(36).substring(2, 9));
+  return `${quote}${u}${quote}`;
 }
