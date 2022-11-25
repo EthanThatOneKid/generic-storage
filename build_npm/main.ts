@@ -1,11 +1,11 @@
 /* Build NPM package:
- * deno run -A tasks/build_npm.ts 0.0.1 -r
+ * deno run -A build_npm/main.ts 0.0.1 -r
  *
  * Build NPM package with custom remote:
- * deno run -A tasks/build_npm.ts 0.0.1 -r https://github.com/ethanthatonekid/generic-storage/raw/$COMMIT_SHA
+ * deno run -A build_npm/main.ts 0.0.1 -r https://github.com/ethanthatonekid/generic-storage/raw/$COMMIT_SHA
  *
  * Build NPM package locally:
- * deno run -A tasks/build_npm.ts 0.0.1
+ * deno run -A build_npm/main.ts 0.0.1
  *
  * Publish NPM package:
  * npm adduser
@@ -69,7 +69,7 @@ async function main() {
   Deno.copyFileSync("LICENSE", "npm/LICENSE");
   Deno.copyFileSync("README.md", "npm/README.md");
 
-  // await emptyDir(defaultTmpDir);
+  await emptyDir(defaultTmpDir);
 }
 
 /**
