@@ -46,17 +46,18 @@ deno lint
 Our dependencies are divided into `deps.ts` and `test.deps.ts`.
 
 ```
-# TODO: Explain https://github.com/hayd/deno-udd usage
-```
+# Step 1: Install UDD tool, https://github.com/hayd/deno-udd
+deno install -rf --allow-read=. --allow-write=. --allow-net https://deno.land/x/udd/main.ts
 
-#### Updating `lock.json`
+# Step 2: Update dependencies
+udd *.ts
 
-After updating a dependency version in `deps.ts`, run the following command to
-re-lock the dependencies:
-
-```bash
+# Step 3: Update lock.json
 deno cache --reload --lock=lock.json --lock-write deps.ts test.deps.ts
 ```
+
+Locking in Deno:
+<https://deno.land/manual/linking_to_external_code/integrity_checking>
 
 ### Running locally
 
