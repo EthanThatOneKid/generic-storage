@@ -9,6 +9,7 @@ import { DefaultHandler, DefaultServer } from "./http/default/mod.ts";
 
 export interface ServeInit<Data extends DefaultData> extends StdServeInit {
   storage?: Storer<string, Data>;
+  allowedOrigins?: string;
 }
 
 /**
@@ -49,10 +50,24 @@ export interface ServeInit<Data extends DefaultData> extends StdServeInit {
 export function serve<Data extends DefaultData>(
   {
     storage: s = new WebStorer((d: Data) => d[d.$key]),
+    allowedOrigins,
     ...o
   }: ServeInit<Data> = {},
 ): void {
   const p = new DefaultServer<Data>(s); // provider
   const h = new DefaultHandler(p);
-  stdServe(h.handle.bind(h), o);
+
+  // Apply CORS when allowedOrigins is defined
+  if (allowedOrigins) {
+    stdServe(async (req) => {
+      return applyCORS(await h.handle(req), allowedOrigins);
+    }, o);
+  } else {
+    stdServe(h.handle.bind(h), o);
+  }
+}
+
+function applyCORS(res: Response, accessControl: string): Response {
+  res.headers.set("Access-Control-Allow-Origin", accessControl);
+  return res;
 }
