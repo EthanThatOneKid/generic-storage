@@ -52,6 +52,7 @@ export function serve<Data extends DefaultData>(
     ...o
   }: ServeInit<Data> = {},
 ): void {
-  const { handle } = new DefaultHandler(new DefaultServer<Data>(s));
-  stdServe(handle, o);
+  const p = new DefaultServer<Data>(s); // provider
+  const h = new DefaultHandler(p);
+  stdServe(h.handle.bind(h), o);
 }
