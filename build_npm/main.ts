@@ -1,10 +1,10 @@
-/* Build NPM package:
- * deno run -A build_npm/main.ts 0.0.1 -r
+/* Build NPM package for development:
+ * deno run -A https://etok.codes/generic-storage/raw/main/build_npm/main.ts 0.0.1 -r
  *
  * Build NPM package with custom remote:
- * deno run -A build_npm/main.ts 0.0.1 -r https://github.com/ethanthatonekid/generic-storage/raw/$COMMIT_SHA
+ * deno run -A build_npm/main.ts 0.0.1 -r https://etok.codes/generic-storage/raw/$COMMIT_SHA
  *
- * Build NPM package locally:
+ * Build NPM package locally for publication:
  * deno run -A build_npm/main.ts 0.0.1
  *
  * Publish NPM package:
@@ -66,8 +66,10 @@ async function main() {
   await build(options);
 
   // post build steps
-  Deno.copyFileSync("LICENSE", "npm/LICENSE");
-  Deno.copyFileSync("README.md", "npm/README.md");
+  if (!remote) {
+    Deno.copyFileSync("LICENSE", "npm/LICENSE");
+    Deno.copyFileSync("README.md", "npm/README.md");
+  }
 
   await emptyDir(defaultTmpDir);
 }
