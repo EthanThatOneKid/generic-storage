@@ -5,7 +5,7 @@ import type { DefaultData } from "../../../http/common/default_data.ts";
 export class DefaultClient implements Client<DefaultData> {
   constructor(
     public readonly origin: string,
-    private readonly fetcher: Fetcher = { fetch: fetch },
+    private readonly fetcher: Fetcher,
   ) {}
 
   async get(key: string): Promise<DefaultData> {
