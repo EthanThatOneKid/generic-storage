@@ -26,7 +26,7 @@ export class DefaultHandler<
 
     switch (u.pathname) {
       case "/": {
-        const data = await r.json();
+        const data = r.body && await r.json();
         const list = await this.server.list(data);
         return new Response(JSON.stringify(list));
       }
