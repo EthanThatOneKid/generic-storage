@@ -12,23 +12,22 @@
  * cd npm && npm publish
  */
 
-import { parse } from "https://deno.land/std@0.165.0/flags/mod.ts";
-import { join } from "https://deno.land/std@0.165.0/path/posix.ts";
+import { parse } from "https://deno.land/std@0.166.0/flags/mod.ts";
+import { join } from "https://deno.land/std@0.166.0/path/posix.ts";
 
-import type {
-  BuildOptions,
-  EntryPoint,
-} from "https://deno.land/x/dnt@0.32.0/mod.ts";
+import type { BuildOptions } from "https://deno.land/x/dnt@0.32.0/mod.ts";
 import { build, emptyDir } from "https://deno.land/x/dnt@0.32.0/mod.ts";
+import { urlJoin } from "https://deno.land/x/url_join@1.0.0/mod.ts";
 
-const defaultEntrypoint = "./demos/default/client/mod.ts";
+const defaultEntryPoint = "./demos/default/client/mod.ts";
 const defaultRootTestDir = "./demos/default/client";
 const defaultOutDir = "./npm";
+const defaultTmpDir = "./tmp";
 const defaultRemotePrefix =
   "https://github.com/ethanthatonekid/generic-storage/raw/main";
 
 const defaultOptions: BuildOptions = {
-  entryPoints: [defaultEntrypoint],
+  entryPoints: [defaultEntryPoint],
   rootTestDir: defaultRootTestDir,
   outDir: defaultOutDir,
   shims: {
@@ -62,29 +61,93 @@ async function main() {
   const flags = parse(Deno.args);
   const remote = flags.r || flags.remote;
 
-  const options: BuildOptions = { ...defaultOptions };
-  if (remote) {
-    options.entryPoints = defaultOptions.entryPoints.map((entryPoint) =>
-      consolidate(entryPoint, remote)
-    );
-    options.rootTestDir = consolidate(defaultOptions.rootTestDir, remote);
-  }
+  const options = await consolidate(defaultOptions, remote);
 
   await build(options);
 
   // post build steps
   Deno.copyFileSync("LICENSE", "npm/LICENSE");
   Deno.copyFileSync("README.md", "npm/README.md");
+
+  // await emptyDir(defaultTmpDir);
 }
 
-function consolidate(
-  path: string | EntryPoint | undefined,
-  remoteArg: unknown,
-): string {
-  return join(
-    typeof remoteArg === "string" && remoteArg.startsWith("https://")
-      ? remoteArg
+/**
+ * consolidate makes the entrypoint and root test dir paths relative to the
+ * temporary files.
+ */
+async function consolidate(
+  o: BuildOptions,
+  arg: unknown,
+  tmpDir = defaultTmpDir,
+) {
+  // Return default options if remote flag is not set.
+  if (!arg) return o;
+
+  // Unset root test dir to prevent the test runner from running.
+  o.rootTestDir = undefined;
+
+  // Use default remote prefix if remote flag is set but no value is provided.
+  const prefix = new URL(
+    typeof arg === "string" && arg.startsWith("http")
+      ? arg
       : defaultRemotePrefix,
-    (path as { path: string })?.path ?? path,
+  ).toString();
+
+  // Download remote entry point files temporarily.
+  o.entryPoints = await Promise.all(
+    o.entryPoints.map(async (entryPoint) => {
+      const path = (entryPoint as { path: string })?.path ?? entryPoint;
+      const content = await (await fetch(urlJoin(prefix, path))).text();
+      if (!content) {
+        throw new Error("No content found");
+      }
+
+      const tmpPath = join(tmpDir, path);
+      const remoteImportsOnly = replaceRelativeImportsWithRemoteURL(
+        content,
+        urlJoin(prefix, join(path, "..")),
+      );
+
+      await Deno.mkdir(join(tmpDir, path, ".."), { recursive: true });
+      await Deno.writeTextFile(tmpPath, remoteImportsOnly);
+
+      // Return temporary entry point path to remove after build.
+      return tmpPath;
+    }),
   );
+
+  return o;
+}
+
+function replaceRelativeImportsWithRemoteURL(
+  content: string,
+  prefix: string,
+) {
+  // Regular expression derived from:
+  // https://gist.github.com/manekinekko/7e58a17bc62a9be47172?permalink_comment_id=4349395#gistcomment-4349395
+  const relativeImportPattern =
+    /(import|export)(?:[\s.*]([\w*{}\n\r\t, ]+)[\s*]from)?[ \n\t]*(['"])(?:\.{1,2}(\/\.{2})*)([^'"\n]+)(?:['"])?/gm;
+  const inlineRelativeImportPattern =
+    /import\([ \n\t]*(['"])(?:\.{1,2}(\/\.{2})*)([^'"\n]+)(?:['"])\)/gm;
+
+  return content
+    .replaceAll(
+      relativeImportPattern,
+      (
+        _,
+        keyword, /*= "import" */
+        deps, /*= "{ dep }" */
+        quote, /*= "'" */
+        __,
+        relativePath, /*= "./mod.ts" */
+      ) =>
+        `${keyword} ${deps ? `${deps} from` : ""} ${quote}${
+          urlJoin(prefix, relativePath)
+        }${quote}`,
+    ).replaceAll(
+      inlineRelativeImportPattern,
+      (_, quote, /*= "'" */ __, relativePath /*= "./mod.ts" */) =>
+        `import(${quote}${urlJoin(prefix, relativePath)}${quote})`,
+    );
 }
