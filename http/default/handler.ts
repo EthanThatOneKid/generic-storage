@@ -1,12 +1,12 @@
 import type { DefaultData } from "../common/default_data.ts";
-import type { Handler } from "../mod.ts";
+import type { Server } from "../common/server.ts";
 
-import type { DefaultServer } from "./server.ts";
+import type { Handler } from "../mod.ts";
 
 export class DefaultHandler<
   Data extends DefaultData,
 > implements Handler {
-  constructor(private readonly server: DefaultServer<Data>) {}
+  constructor(private readonly server: Server<Data>) {}
 
   public async handle(r: Request): Promise<Response> {
     switch (r.method) {
