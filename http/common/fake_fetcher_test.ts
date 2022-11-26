@@ -1,6 +1,6 @@
-import { assertEquals } from "../../../test.deps.ts";
+import { assertEquals } from "../../test.deps.ts";
 
-import { FakeFetch } from "./fake_fetch.ts";
+import { FakeFetcher } from "./fake_fetcher.ts";
 
 const FAKE_ORIGIN = "http://localhost:8080";
 const FAKE_URL_1 = `${FAKE_ORIGIN}/1`;
@@ -8,14 +8,14 @@ const FAKE_DATA_1 = { $key: "id", id: "1", name: "one" } as const;
 const FAKE_DATA_2 = { $key: "id", id: "2", name: "two" } as const;
 
 Deno.test("FakeFetch.get", async () => {
-  const f = new FakeFetch({ [FAKE_DATA_1.id]: { ...FAKE_DATA_1 } });
+  const f = new FakeFetcher({ [FAKE_DATA_1.id]: { ...FAKE_DATA_1 } });
   const res = await f.fetch(FAKE_URL_1);
   assertEquals(res.status, 200);
   assertEquals(await res.json(), FAKE_DATA_1);
 });
 
 Deno.test("FakeFetch.set", async () => {
-  const f = new FakeFetch({ [FAKE_DATA_1.id]: { ...FAKE_DATA_1 } });
+  const f = new FakeFetcher({ [FAKE_DATA_1.id]: { ...FAKE_DATA_1 } });
   const res = await f.fetch(FAKE_ORIGIN, {
     method: "POST",
     headers: {
@@ -32,14 +32,14 @@ Deno.test("FakeFetch.set", async () => {
 });
 
 Deno.test("FakeFetch.remove", async () => {
-  const f = new FakeFetch({ [FAKE_DATA_1.id]: FAKE_DATA_1 });
+  const f = new FakeFetcher({ [FAKE_DATA_1.id]: FAKE_DATA_1 });
   const res = await f.fetch(FAKE_URL_1, { method: "DELETE" });
   assertEquals(res.status, 200);
   assertEquals(f.data, {});
 });
 
 Deno.test("FakeFetch.list", async () => {
-  const f = new FakeFetch({ [FAKE_DATA_1.id]: FAKE_DATA_1 });
+  const f = new FakeFetcher({ [FAKE_DATA_1.id]: FAKE_DATA_1 });
   const res = await f.fetch(FAKE_ORIGIN, {
     method: "GET",
     headers: {
@@ -51,7 +51,7 @@ Deno.test("FakeFetch.list", async () => {
 });
 
 Deno.test("FakeFetch.clear", async () => {
-  const f = new FakeFetch({ [FAKE_DATA_1.id]: FAKE_DATA_1 });
+  const f = new FakeFetcher({ [FAKE_DATA_1.id]: FAKE_DATA_1 });
   const res = await f.fetch(FAKE_ORIGIN, { method: "DELETE" });
   assertEquals(res.status, 200);
   assertEquals(f.data, {});
