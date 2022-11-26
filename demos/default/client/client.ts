@@ -11,7 +11,13 @@ export class DefaultClient implements Client<DefaultData> {
   async get(key: string, opts?: RequestInit): Promise<DefaultData> {
     const url = new URL(`${this.origin}/${key}`);
     const res = await this.fetcher.fetch(url, opts);
-    return await res.json() as DefaultData;
+
+    const json = await res.text();
+    try {
+      return JSON.parse(json) as DefaultData;
+    } catch {
+      throw new Error(json);
+    }
   }
 
   async set(data: DefaultData, opts?: RequestInit) {
@@ -46,7 +52,13 @@ export class DefaultClient implements Client<DefaultData> {
       body: JSON.stringify(data),
       ...opts,
     });
-    return await res.json() as DefaultData[];
+
+    const json = await res.text();
+    try {
+      return JSON.parse(json) as DefaultData[];
+    } catch {
+      throw new Error(json);
+    }
   }
 
   async clear(opts?: RequestInit) {

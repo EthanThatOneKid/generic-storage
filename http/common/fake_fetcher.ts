@@ -11,6 +11,7 @@ interface FakeData extends DefaultData {
 export class FakeFetcher implements Fetcher {
   constructor(
     public data: Record<string, FakeData> = {},
+    public readonly returnCode = 200,
   ) {}
 
   public async fetch(
@@ -21,6 +22,12 @@ export class FakeFetcher implements Fetcher {
     const method = init?.method ?? "GET";
     const body: FakeData = JSON.parse(init?.body?.toString() ?? "{}");
     const headers = init?.headers ?? {};
+
+    if (this.returnCode >= 400) {
+      return Promise.resolve(
+        new Response("Error", { status: this.returnCode }),
+      );
+    }
 
     switch (method) {
       case "GET": {
