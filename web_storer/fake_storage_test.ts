@@ -2,7 +2,7 @@ import { assertEquals } from "../test.deps.ts";
 
 import { FakeStorage } from "./fake_storage.ts";
 
-Deno.test("FakeStorage behaves like localStorage", () => {
+Deno.test("FakeStorage matches localStorage API", () => {
   const storage = new FakeStorage();
 
   storage.setItem("test", "Hello");
