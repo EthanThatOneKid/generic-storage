@@ -33,8 +33,12 @@ export class DefaultHandler<
 
       default: {
         const key = u.pathname.slice(1);
-        const data = await this.server.get(key);
-        return new Response(JSON.stringify(data));
+        try {
+          const data = await this.server.get(key);
+          return new Response(JSON.stringify(data));
+        } catch {
+          return new Response("Not found", { status: 404 });
+        }
       }
     }
   }
@@ -56,8 +60,12 @@ export class DefaultHandler<
 
       default: {
         const key = u.pathname.slice(1);
-        await this.server.remove(key);
-        return new Response("OK");
+        try {
+          await this.server.remove(key);
+          return new Response("OK");
+        } catch {
+          return new Response("Not found", { status: 404 });
+        }
       }
     }
   }
