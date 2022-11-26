@@ -25,11 +25,22 @@ storage system on [Deno Deploy](https://deno.com/deploy/docs/deployments)._
 
 ### Testing
 
+Pass all existing unit tests.
+
 ```bash
 deno test
 ```
 
+Cover code completely.
+
+```bash
+deno test --coverage="cov"
+deno coverage cov/
+```
+
 ### Formatting
+
+Properly format.
 
 ```bash
 deno fmt
@@ -37,11 +48,17 @@ deno fmt
 
 ### Linting
 
+Check for lint errors.
+
 ```bash
 deno lint
 ```
 
 ### Running locally
+
+Run the server locally.
+
+Run this command alongside `npm run dev` to develop with local dev storage.
 
 ```bash
 deno run --allow-net demos/default/main.ts
