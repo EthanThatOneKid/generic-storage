@@ -25,14 +25,14 @@ Deno.test("FakeFetcher GET /:key returns empty for missing data", async () => {
   assertEquals(await res.text(), "");
 });
 
-Deno.test("FakeFectch GET / lists empty array", async () => {
+Deno.test("FakeFectcher GET / lists empty array", async () => {
   const f = new FakeFetcher();
   const res = await f.fetch(FAKE_ORIGIN);
   assertEquals(res.status, 200);
   assertEquals(await res.json(), []);
 });
 
-Deno.test("FakeFectch GET / lists all data", async () => {
+Deno.test("FakeFectcher GET / lists all data", async () => {
   const f = new FakeFetcher({
     [FAKE_DATA_1.id]: FAKE_DATA_1,
     [FAKE_DATA_2.id]: FAKE_DATA_2,
@@ -85,7 +85,7 @@ Deno.test("FakeFetcher DELETE / clears storage", async () => {
   assertEquals(f.data, {});
 });
 
-Deno.test("FakeFetcher unallowed methods return 405", async () => {
+Deno.test("FakeFetcher disallowed methods return 405", async () => {
   const f = new FakeFetcher();
   const res = await f.fetch(FAKE_ORIGIN, { method: "PUT" });
   assertEquals(res.status, 405);
