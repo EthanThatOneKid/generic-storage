@@ -1,5 +1,11 @@
 # <https://etok.codes/generic-storage>
 
+[![Test](https://github.com/EthanThatOneKid/generic-storage/actions/workflows/test.yml/badge.svg)](https://github.com/EthanThatOneKid/generic-storage/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/EthanThatOneKid/generic-storage/branch/main/graph/badge.svg?token=01BYD4R3GU)](https://codecov.io/gh/EthanThatOneKid/generic-storage)
+[![GitHub issues](https://img.shields.io/github/issues/EthanThatOneKid/generic-storage)](https://github.com/ethanthatonekid/generic-storage/issues)
+
+[![Icicle graph](https://codecov.io/gh/EthanThatOneKid/generic-storage/branch/main/graphs/icicle.svg?token=01BYD4R3GU)](https://app.codecov.io/gh/EthanThatOneKid/generic-storage/settings/badge)
+
 Generic storage interface `Storer` for declarative resources.
 
 ## Purpose
