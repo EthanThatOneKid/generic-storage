@@ -58,6 +58,17 @@ Deno.test("DefaultClient.list", async () => {
   assertEquals(data, [FAKE_DATA_1, FAKE_DATA_2]);
 });
 
+Deno.test("DefaultClient.list (error)", async () => {
+  const fetcher = new FakeFetcher({}, 500);
+  const client = new DefaultClient(TEST_ORIGIN, fetcher);
+  try {
+    await client.list();
+    assertEquals(true, false);
+  } catch {
+    assertEquals(fetcher.data, {});
+  }
+});
+
 Deno.test("DefaultClient.clear", async () => {
   const fetcher = new FakeFetcher({
     [FAKE_DATA_1.id]: { ...FAKE_DATA_1 },
