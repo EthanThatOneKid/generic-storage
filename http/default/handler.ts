@@ -26,8 +26,19 @@ export class DefaultHandler<
 
     switch (u.pathname) {
       case "/": {
-        const data = r.body && await r.json();
-        const list = await this.server.list(data);
+        const list = await this.server.list(
+          Array.from(u.searchParams.entries()).reduce(
+            (acc, [key, value]: [keyof Data, string]) => {
+              try {
+                acc[key] = JSON.parse(value);
+              } catch {
+                acc[key] = value as unknown as Data[keyof Data];
+              }
+              return acc;
+            },
+            {} as Partial<Data>,
+          ),
+        );
         return new Response(JSON.stringify(list));
       }
 

@@ -1,5 +1,3 @@
-const ErrMethodUnimplemented = new Error("Method not implemented");
-
 /**
  * FakeStorage implements Storage for testing.
  */
@@ -7,11 +5,11 @@ export class FakeStorage implements Storage {
   private data: Record<string, string> = {};
 
   public get length(): number {
-    throw ErrMethodUnimplemented;
+    return 0;
   }
 
   public key(_: number): string | null {
-    throw ErrMethodUnimplemented;
+    return null;
   }
 
   public clear(): void {

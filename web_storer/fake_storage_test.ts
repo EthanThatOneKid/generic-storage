@@ -20,3 +20,15 @@ Deno.test("FakeStorage matches localStorage API", () => {
   assertEquals(storage.getItem("test"), null);
   assertEquals(localStorage.getItem("test"), null);
 });
+
+Deno.test("FakeStorage length unimplemented", () => {
+  const storage = new FakeStorage();
+
+  assertEquals(storage.length, 0);
+});
+
+Deno.test("FakeStorage key unimplemented", () => {
+  const storage = new FakeStorage();
+
+  assertEquals(storage.key(0), null);
+});

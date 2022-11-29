@@ -34,8 +34,7 @@ deno test
 Cover code completely.
 
 ```bash
-deno test --coverage="cov"
-deno coverage cov/
+deno test --coverage="cov" && deno coverage cov/
 ```
 
 ### Formatting
