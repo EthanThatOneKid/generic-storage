@@ -57,7 +57,7 @@ deno lint
 
 Run the server locally.
 
-Run this command alongside `npm run dev` to develop with local dev storage.
+Run this command alongside your client to develop with local dev storage.
 
 ```bash
 deno run --allow-net demos/default/main.ts
