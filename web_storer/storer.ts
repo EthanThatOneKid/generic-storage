@@ -34,8 +34,8 @@ export class WebStorer<Key extends string, Data> implements Storer<Key, Data> {
     this.storage.setItem(newKey, JSON.stringify(data));
 
     // Update internal list of keys.
-    const internalKeys = this.storage.getItem(this.internalKey);
-    const oldKeys = JSON.parse(internalKeys ?? "[]");
+    const internalKeys = this.storage.getItem(this.internalKey) ?? "[]";
+    const oldKeys = JSON.parse(internalKeys);
     const newKeys = [...oldKeys, newKey];
     this.storage.setItem(this.internalKey, JSON.stringify(newKeys));
 
@@ -46,8 +46,8 @@ export class WebStorer<Key extends string, Data> implements Storer<Key, Data> {
     this.storage.removeItem(key);
 
     // Update internal list of keys.
-    const internalKeys = this.storage.getItem(this.internalKey);
-    const oldKeys = JSON.parse(internalKeys ?? "[]");
+    const internalKeys = this.storage.getItem(this.internalKey) ?? "[]";
+    const oldKeys = JSON.parse(internalKeys);
     const newKeys = oldKeys.filter((oldKey: Key) => oldKey !== key);
     this.storage.setItem(this.internalKey, JSON.stringify(newKeys));
 
@@ -55,8 +55,8 @@ export class WebStorer<Key extends string, Data> implements Storer<Key, Data> {
   }
 
   public list(filter?: (data: Data) => boolean): Promise<Key[]> {
-    const internalKeys = this.storage.getItem(this.internalKey);
-    const keys = JSON.parse(internalKeys ?? "[]") as Key[];
+    const internalKeys = this.storage.getItem(this.internalKey) ?? "[]";
+    const keys = JSON.parse(internalKeys) as Key[];
 
     const entries: Array<[Key, Data]> = keys.map((
       key: Key,

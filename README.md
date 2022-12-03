@@ -1,5 +1,11 @@
 # <https://etok.codes/generic-storage>
 
+[![Test](https://github.com/EthanThatOneKid/generic-storage/actions/workflows/test.yml/badge.svg)](https://github.com/EthanThatOneKid/generic-storage/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/EthanThatOneKid/generic-storage/branch/main/graph/badge.svg?token=01BYD4R3GU)](https://codecov.io/gh/EthanThatOneKid/generic-storage)
+[![GitHub issues](https://img.shields.io/github/issues/EthanThatOneKid/generic-storage)](https://github.com/ethanthatonekid/generic-storage/issues)
+
+[![Icicle graph](https://codecov.io/gh/EthanThatOneKid/generic-storage/branch/main/graphs/icicle.svg?token=01BYD4R3GU)](https://app.codecov.io/gh/EthanThatOneKid/generic-storage/settings/badge)
+
 Generic storage interface `Storer` for declarative resources.
 
 ## Purpose
@@ -25,11 +31,21 @@ storage system on [Deno Deploy](https://deno.com/deploy/docs/deployments)._
 
 ### Testing
 
+Pass all existing unit tests.
+
 ```bash
 deno test
 ```
 
+Cover code completely.
+
+```bash
+deno test --coverage="cov" && deno coverage cov/
+```
+
 ### Formatting
+
+Properly format.
 
 ```bash
 deno fmt
@@ -37,11 +53,17 @@ deno fmt
 
 ### Linting
 
+Check for lint errors.
+
 ```bash
 deno lint
 ```
 
 ### Running locally
+
+Run the server locally.
+
+Run this command alongside your client to develop with local dev storage.
 
 ```bash
 deno run --allow-net demos/default/main.ts

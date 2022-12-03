@@ -1,12 +1,12 @@
 import type { DefaultData } from "../common/default_data.ts";
-import type { Handler } from "../mod.ts";
+import type { Server } from "../common/server.ts";
 
-import type { DefaultServer } from "./server.ts";
+import type { Handler } from "../mod.ts";
 
 export class DefaultHandler<
   Data extends DefaultData,
 > implements Handler {
-  constructor(private readonly server: DefaultServer<Data>) {}
+  constructor(private readonly server: Server<Data>) {}
 
   public async handle(r: Request): Promise<Response> {
     switch (r.method) {
@@ -26,15 +26,30 @@ export class DefaultHandler<
 
     switch (u.pathname) {
       case "/": {
-        const data = r.body && await r.json();
-        const list = await this.server.list(data);
+        const list = await this.server.list(
+          Array.from(u.searchParams.entries()).reduce(
+            (acc, [key, value]: [keyof Data, string]) => {
+              try {
+                acc[key] = JSON.parse(value);
+              } catch {
+                acc[key] = value as unknown as Data[keyof Data];
+              }
+              return acc;
+            },
+            {} as Partial<Data>,
+          ),
+        );
         return new Response(JSON.stringify(list));
       }
 
       default: {
         const key = u.pathname.slice(1);
-        const data = await this.server.get(key);
-        return new Response(JSON.stringify(data));
+        try {
+          const data = await this.server.get(key);
+          return new Response(JSON.stringify(data));
+        } catch {
+          return new Response("Not found", { status: 404 });
+        }
       }
     }
   }
@@ -56,8 +71,12 @@ export class DefaultHandler<
 
       default: {
         const key = u.pathname.slice(1);
-        await this.server.remove(key);
-        return new Response("OK");
+        try {
+          await this.server.remove(key);
+          return new Response("OK");
+        } catch {
+          return new Response("Not found", { status: 404 });
+        }
       }
     }
   }

@@ -1,5 +1,5 @@
-import type { DefaultData } from "../../../http/common/default_data.ts";
-import type { Fetcher } from "../../../http/common/fetcher.ts";
+import type { DefaultData } from "./default_data.ts";
+import type { Fetcher } from "./fetcher.ts";
 
 interface FakeData extends DefaultData {
   $key: "id";
@@ -8,9 +8,10 @@ interface FakeData extends DefaultData {
 /**
  * FakeFetch is a fake fetch function that simulates server responses on the client.
  */
-export class FakeFetch implements Fetcher {
+export class FakeFetcher implements Fetcher {
   constructor(
     public data: Record<string, FakeData> = {},
+    public readonly returnCode = 200,
   ) {}
 
   public async fetch(
@@ -21,6 +22,12 @@ export class FakeFetch implements Fetcher {
     const method = init?.method ?? "GET";
     const body: FakeData = JSON.parse(init?.body?.toString() ?? "{}");
     const headers = init?.headers ?? {};
+
+    if (this.returnCode >= 400) {
+      return Promise.resolve(
+        new Response("Error", { status: this.returnCode }),
+      );
+    }
 
     switch (method) {
       case "GET": {
